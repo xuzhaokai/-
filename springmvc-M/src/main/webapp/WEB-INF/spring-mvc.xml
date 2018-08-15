@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!-- 自动扫描的包名 -->
+    <context:component-scan base-package="com.oocl.business.controller" />
+
+    <!-- 注解驱动 -->
+    <mvc:annotation-driven enable-matrix-variables="true">
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <!-- SpringMVC跨域 -->
+    <!--<mvc:cors>-->
+		<!--<mvc:mapping path="/**" allowed-origins="*"-->
+			<!--allow-credentials="true" max-age="1800"-->
+			<!--allowed-methods="GET,POST,PUT,DELETE,OPTIONS" />-->
+	<!--</mvc:cors>-->
+
+
+    <!-- 静态资源 -->
+    <mvc:default-servlet-handler/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.oocl.business.interceptor.LoginInterceptor">
+                <property name="exceptUrls">
+                    <list>
+                        <value>/business/login</value>
+                        <value>/business/register</value>
+                        <value>/orders</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 图片上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+
+
+</beans>
